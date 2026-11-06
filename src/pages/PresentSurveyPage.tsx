@@ -25,6 +25,7 @@ export default function PresentSurveyPage() {
   const [fullscreen, setFullscreen] = useState(
     Boolean(document.fullscreenElement),
   );
+
   const publicUrl =
     survey?.status === "active" && survey.public_slug
       ? getPublicSurveyUrl(survey.public_slug)
@@ -32,6 +33,7 @@ export default function PresentSurveyPage() {
 
   useEffect(() => {
     let cancelled = false;
+
     getSurvey(id)
       .then((data) => {
         if (!cancelled) {
@@ -48,6 +50,7 @@ export default function PresentSurveyPage() {
       .finally(() => {
         if (!cancelled) setLoading(false);
       });
+
     return () => {
       cancelled = true;
     };
@@ -55,7 +58,10 @@ export default function PresentSurveyPage() {
 
   useEffect(() => {
     if (!publicUrl) return;
+
     let cancelled = false;
+
+    // Generate a high-resolution image suitable for download as well as display.
     QRCode.toDataURL(publicUrl, {
       width: 1200,
       margin: 4,
@@ -67,6 +73,7 @@ export default function PresentSurveyPage() {
       .catch(() => {
         if (!cancelled) setError("Could not generate the QR code.");
       });
+
     return () => {
       cancelled = true;
     };
@@ -74,12 +81,14 @@ export default function PresentSurveyPage() {
 
   useEffect(() => {
     if (survey?.status !== "active") return;
+
     let timer: ReturnType<typeof setInterval> | undefined;
     let cancelled = false;
     let requestVersion = 0;
 
     async function poll() {
       const version = ++requestVersion;
+
       try {
         const next = await getSurvey(id);
         if (!cancelled && !document.hidden && version === requestVersion) {
@@ -105,8 +114,10 @@ export default function PresentSurveyPage() {
         timer = setInterval(() => void poll(), 5000);
       }
     }
+
     document.addEventListener("visibilitychange", visibilityChanged);
     visibilityChanged();
+
     return () => {
       cancelled = true;
       if (timer) clearInterval(timer);
@@ -119,12 +130,14 @@ export default function PresentSurveyPage() {
       setFullscreen(Boolean(document.fullscreenElement));
       setFullscreenError(false);
     };
+
     document.addEventListener("fullscreenchange", changed);
     return () => document.removeEventListener("fullscreenchange", changed);
   }, []);
 
   async function toggleFullscreen() {
     setFullscreenError(false);
+
     try {
       if (document.fullscreenElement) await document.exitFullscreen();
       else await document.documentElement.requestFullscreen();
@@ -136,6 +149,7 @@ export default function PresentSurveyPage() {
   async function close() {
     setClosing(true);
     setError("");
+
     try {
       await closeSurvey(id);
       navigate(`/surveys/${id}/results`);

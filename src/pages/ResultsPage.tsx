@@ -25,6 +25,7 @@ export default function ResultsPage() {
   const refresh = useCallback(async () => {
     setBusy(true);
     setError("");
+
     try {
       const [nextSurvey, nextResults] = await Promise.all([
         getSurvey(id),
@@ -43,6 +44,7 @@ export default function ResultsPage() {
 
   useEffect(() => {
     let cancelled = false;
+
     Promise.all([getSurvey(id), getSurveyResults(id)])
       .then(([nextSurvey, nextResults]) => {
         if (!cancelled) {
@@ -59,6 +61,7 @@ export default function ResultsPage() {
       .finally(() => {
         if (!cancelled) setBusy(false);
       });
+
     return () => {
       cancelled = true;
     };
@@ -67,13 +70,16 @@ export default function ResultsPage() {
   async function exportCsv() {
     setExporting(true);
     setError("");
+
     try {
       const data = await getSurveyExport(id);
       const url = URL.createObjectURL(
         new Blob([buildCsv(data)], { type: "text/csv;charset=utf-8" }),
       );
+
       const link = document.createElement("a");
       link.href = url;
+
       const today = new Date();
       const date = [
         today.getFullYear(),
@@ -82,7 +88,9 @@ export default function ResultsPage() {
       ].join("-");
       link.download = `${safeFilename(data.title)}-${date}.csv`;
       link.click();
-      URL.revokeObjectURL(url);
+
+      // Release the temporary object URL after the browser starts the download.
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch (err) {
       setError(
         (err as { message?: string }).message || "Could not export results.",
@@ -138,7 +146,9 @@ export default function ResultsPage() {
           </div>
           {results.response_count === 0 && (
             <p className="results-empty">
-              No responses yet. Display the QR code so students can join.
+              {survey.status === "closed" || survey.status === "archived"
+                ? "No responses were submitted."
+                : "No responses yet. Display the QR code so students can join."}
             </p>
           )}
           {results.questions.map((question) => (

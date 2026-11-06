@@ -8,35 +8,42 @@
   flex-direction: column;
   align-items: center;
 }
+
 .present-back {
   align-self: flex-start;
 }
+
 .present-page h1 {
   font-size: clamp(2rem, 4.5vw, 4rem);
   line-height: 1.1;
   margin: 0.5rem 0;
   overflow-wrap: anywhere;
 }
+
 .present-join {
   display: flex;
   flex-direction: column;
   align-items: center;
   min-width: 0;
 }
+
 .present-qr {
   width: min(45vh, 65vw, 500px);
   height: auto;
 }
+
 .present-url {
   font-size: clamp(1.2rem, 2.5vw, 2.4rem);
   font-weight: 700;
   overflow-wrap: anywhere;
 }
+
 .present-count {
   font-size: clamp(1.4rem, 2.5vw, 2.2rem);
   font-weight: 700;
   margin: 0.4rem 0;
 }
+
 .present-actions {
   display: flex;
   flex-wrap: wrap;
@@ -45,23 +52,28 @@
   margin-top: auto;
   padding-top: 1rem;
 }
+
 .present-inactive {
   font-size: 1.5rem;
   margin: 3rem 0;
 }
+
 @media (max-width: 600px) {
   .present-page {
     padding: 1rem;
   }
+
   .present-qr {
     width: min(75vw, 45vh);
   }
 }
+
 .present-note {
   color: #475569;
   font-size: 1rem;
   margin: 0.35rem 0;
 }
+
 .present-note button {
   color: #2457a7;
   background: transparent;

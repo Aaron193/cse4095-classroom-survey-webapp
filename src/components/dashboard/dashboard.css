@@ -2,6 +2,7 @@
   display: grid;
   gap: 1.5rem;
 }
+
 .dashboard-heading,
 .dashboard-card-heading {
   display: flex;
@@ -10,19 +11,23 @@
   gap: 1rem;
   flex-wrap: wrap;
 }
+
 .dashboard-heading h1,
 .dashboard-card-heading h2 {
   margin: 0;
 }
+
 .dashboard-filters {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
   gap: 1rem;
 }
+
 .dashboard-filters label {
   display: grid;
   gap: 0.35rem;
 }
+
 .dashboard-filters select {
   width: 100%;
   min-height: 44px;
@@ -32,10 +37,12 @@
   font: inherit;
   background: white;
 }
+
 .dashboard-list {
   display: grid;
   gap: 1rem;
 }
+
 .dashboard-card {
   background: white;
   border: 1px solid #d1d5db;
@@ -44,9 +51,11 @@
   min-width: 0;
   overflow-wrap: anywhere;
 }
+
 .dashboard-card p {
   color: #374151;
 }
+
 .dashboard-actions {
   display: flex;
   flex-wrap: wrap;

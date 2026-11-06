@@ -1,9 +1,11 @@
 .editor {
   max-width: 48rem;
 }
+
 .editor form {
   gap: 0.75rem;
 }
+
 .editor textarea,
 .editor select {
   width: 100%;
@@ -14,6 +16,7 @@
   font: inherit;
   background: white;
 }
+
 .editor-card {
   display: grid;
   gap: 0.75rem;
@@ -23,24 +26,29 @@
   border-radius: 0.5rem;
   min-width: 0;
 }
+
 .editor-card h3,
 .editor-card h4,
 .editor-card p {
   margin: 0;
 }
+
 .editor-choice {
   display: grid;
   gap: 0.5rem;
 }
+
 .editor-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
 }
+
 .editor-error {
   color: #991b1b;
   margin: 0;
 }
+
 .editor-fields {
   display: grid;
   gap: 0.75rem;

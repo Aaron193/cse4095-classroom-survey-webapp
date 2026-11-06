@@ -9,7 +9,9 @@
     "lint": "eslint .",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\" index.html vite.config.ts eslint.config.js tsconfig.json package.json",
     "test": "vitest run",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "verify:rls": "node scripts/verify-rls.mjs",
+    "load-test": "node scripts/load-test.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.119.0",

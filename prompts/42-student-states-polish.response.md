@@ -1,0 +1,3 @@
+Updated [StudentSurveyPage.tsx](/home/dev/Desktop/college/senior/sem1/cse4095/classroom-survey-web-app/src/pages/StudentSurveyPage.tsx) so the already-submitted and not-found states use a heading and message, consistent with the thank-you state. I also added spacing and short comments around the page’s less obvious logic.
+
+Build, lint, Prettier, and all 26 tests passed. No TODO boxes were verified by this polish change; `TODO.md` was not edited, and no commit was made.

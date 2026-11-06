@@ -32,8 +32,10 @@ function errorCode(error: unknown): string | undefined {
     error !== null &&
     "code" in error &&
     typeof error.code === "string"
-  )
+  ) {
     return error.code;
+  }
+
   return undefined;
 }
 
@@ -51,15 +53,19 @@ export default function StudentSurveyPage() {
   const load = useCallback(async () => {
     const request = ++requestRef.current;
     setPage({ kind: "loading" });
+
     try {
       const result = await getPublicSurvey(slug);
+      // Ignore results from a previous slug or an unmounted page.
       if (request !== requestRef.current) return;
+
       if (result.status === "not_found") setPage({ kind: "not-found" });
       else if (result.status === "closed")
         setPage({ kind: "closed", title: result.title });
       else if (hasSubmitted(browserStorage(), memory, result.survey.id))
         setPage({ kind: "submitted" });
       else setPage({ kind: "form", survey: result.survey });
+
       if (result.status === "active") document.title = result.survey.title;
       if (result.status === "closed") document.title = result.title;
     } catch {
@@ -70,6 +76,7 @@ export default function StudentSurveyPage() {
   useEffect(() => {
     const requests = requestRef;
     void Promise.resolve().then(load);
+
     return () => {
       requests.current++;
     };
@@ -77,19 +84,24 @@ export default function StudentSurveyPage() {
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    // The ref guards against a second tap before React updates the button.
     if (submittingRef.current || page.kind !== "form") return;
+
     const { missing: unanswered, answers } = validateAnswers(
       page.survey.questions,
       selected,
     );
     setMissing(unanswered);
     setSubmitError("");
+
     if (unanswered.length) {
       questionRefs.current[unanswered[0]]?.focus();
       return;
     }
+
     submittingRef.current = true;
     setSubmitting(true);
+
     try {
       const storage = browserStorage();
       const token = getBrowserToken(storage, memory, createRandomToken);
@@ -98,6 +110,7 @@ export default function StudentSurveyPage() {
       setPage({ kind: "success" });
     } catch (error) {
       const code = errorCode(error);
+
       if (code === "DUPLICATE_RESPONSE") {
         rememberSubmission(browserStorage(), memory, page.survey.id);
         setPage({ kind: "submitted" });
@@ -125,7 +138,12 @@ export default function StudentSurveyPage() {
           <Button onClick={() => void load()}>Try Again</Button>
         </>
       )}
-      {page.kind === "not-found" && <p>Survey not found.</p>}
+      {page.kind === "not-found" && (
+        <>
+          <h1>Survey not found</h1>
+          <p>Check the link, or ask your instructor for the current one.</p>
+        </>
+      )}
       {page.kind === "closed" && (
         <>
           <h1>{page.title}</h1>
@@ -139,7 +157,10 @@ export default function StudentSurveyPage() {
         </>
       )}
       {page.kind === "submitted" && (
-        <p>You have already submitted a response to this survey.</p>
+        <>
+          <h1>Already submitted</h1>
+          <p>You have already submitted a response to this survey.</p>
+        </>
       )}
       {page.kind === "form" && (
         <>

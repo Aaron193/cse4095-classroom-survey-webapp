@@ -1,29 +1,28 @@
 import { useState, type FormEvent } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/useAuth";
 import { Button } from "../components/ui/Button";
-import { ErrorState } from "../components/ui/States";
+import { ErrorState, LoadingState } from "../components/ui/States";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
-  const { signIn } = useAuth();
+  const { session, loading, signIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const from = location.state?.from;
+  const destination = from?.pathname
+    ? `${from.pathname}${from.search ?? ""}${from.hash ?? ""}`
+    : "/dashboard";
+
   async function submit(event: FormEvent) {
     event.preventDefault();
     setError("");
     setPending(true);
     try {
       await signIn(email, password);
-      const from = location.state?.from;
-      navigate(
-        from?.pathname
-          ? `${from.pathname}${from.search ?? ""}${from.hash ?? ""}`
-          : "/dashboard",
-        { replace: true },
-      );
+      navigate(destination, { replace: true });
     } catch (err) {
       setError(
         (err as { code?: string }).code === "NETWORK_ERROR"
@@ -34,6 +33,9 @@ export default function LoginPage() {
       setPending(false);
     }
   }
+  if (loading) return <LoadingState />;
+  if (session) return <Navigate to={destination} replace />;
+
   return (
     <main className="center-page">
       <div className="login">

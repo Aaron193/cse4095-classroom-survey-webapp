@@ -89,12 +89,12 @@ type SurveyRow = Omit<SurveySummary, "response_count"> & {
 };
 
 type QuestionRow = Omit<Question, "choices"> & {
-  choices: Choice[];
+  choice_rows: Choice[];
   choices_total: CountRelation;
 };
 
 type DetailRow = SurveyRow & {
-  questions: QuestionRow[];
+  question_rows: QuestionRow[];
   questions_total: CountRelation;
 };
 
@@ -137,13 +137,13 @@ export function getSurvey(id: string): Promise<SurveyDetail> {
     const { data, error } = await client()
       .from("surveys")
       .select(
-        "id,title,description,status,public_slug,created_at,updated_at,responses(count),questions_total:questions(count),questions(id,survey_id,question_text,question_type,position,choices_total:choices(count),choices(id,question_id,choice_text,position))",
+        "id,title,description,status,public_slug,created_at,updated_at,responses(count),questions_total:questions(count),question_rows:questions(id,survey_id,question_text,question_type,position,choices_total:choices(count),choice_rows:choices(id,question_id,choice_text,position))",
       )
       .eq("id", id)
-      .order("position", { referencedTable: "questions" })
-      .order("id", { referencedTable: "questions" })
-      .order("position", { referencedTable: "questions.choices" })
-      .order("id", { referencedTable: "questions.choices" })
+      .order("position", { referencedTable: "question_rows" })
+      .order("id", { referencedTable: "question_rows" })
+      .order("position", { referencedTable: "question_rows.choice_rows" })
+      .order("id", { referencedTable: "question_rows.choice_rows" })
       .maybeSingle();
     if (error) throw error;
     if (!data) throw appError("NOT_FOUND");
@@ -151,7 +151,7 @@ export function getSurvey(id: string): Promise<SurveyDetail> {
     const {
       responses,
       questions_total,
-      questions: embedded,
+      question_rows: embedded,
       ...survey
     } = data as DetailRow;
     // PostgREST may cap embedded rows; fetch all pages only when a count reveals truncation.
@@ -161,32 +161,34 @@ export function getSurvey(id: string): Promise<SurveyDetail> {
             client()
               .from("questions")
               .select(
-                "id,survey_id,question_text,question_type,position,choices_total:choices(count),choices(id,question_id,choice_text,position)",
+                "id,survey_id,question_text,question_type,position,choices_total:choices(count),choice_rows:choices(id,question_id,choice_text,position)",
               )
               .eq("survey_id", id)
               .order("position")
               .order("id")
-              .order("position", { referencedTable: "choices" })
-              .order("id", { referencedTable: "choices" })
+              .order("position", { referencedTable: "choice_rows" })
+              .order("id", { referencedTable: "choice_rows" })
               .range(from, to),
           )
         : embedded;
     const complete = await Promise.all(
-      questions.map(async ({ choices_total, choices, ...question }) => ({
-        ...question,
-        choices:
-          choices.length < relationCount(choices_total)
-            ? await allPages<Choice>((from, to) =>
-                client()
-                  .from("choices")
-                  .select("id,question_id,choice_text,position")
-                  .eq("question_id", question.id)
-                  .order("position")
-                  .order("id")
-                  .range(from, to),
-              )
-            : choices,
-      })),
+      questions.map(
+        async ({ choices_total, choice_rows: choices, ...question }) => ({
+          ...question,
+          choices:
+            choices.length < relationCount(choices_total)
+              ? await allPages<Choice>((from, to) =>
+                  client()
+                    .from("choices")
+                    .select("id,question_id,choice_text,position")
+                    .eq("question_id", question.id)
+                    .order("position")
+                    .order("id")
+                    .range(from, to),
+                )
+              : choices,
+        }),
+      ),
     );
     return {
       ...survey,

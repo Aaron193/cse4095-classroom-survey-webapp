@@ -157,7 +157,8 @@ async function main() {
         "No survey available to check results.",
       );
     }
-    await instructor.auth.signOut();
+    // Preserve instructor sessions in browsers and on other devices.
+    await instructor.auth.signOut({ scope: "local" });
   } else {
     console.log(
       "SKIP instructor checks: INSTRUCTOR_EMAIL and INSTRUCTOR_PASSWORD are not set.",

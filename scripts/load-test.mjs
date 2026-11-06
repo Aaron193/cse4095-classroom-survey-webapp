@@ -232,7 +232,8 @@ async function main() {
       if (surveyId)
         await cleanupSurvey(instructor, surveyId, activationAttempted, keep);
     } finally {
-      await instructor.auth.signOut();
+      // Preserve instructor sessions in browsers and on other devices.
+      await instructor.auth.signOut({ scope: "local" });
     }
   }
 }

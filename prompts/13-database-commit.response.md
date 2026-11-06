@@ -1,0 +1,3 @@
+Committed and pushed **`9b56f10`** to `origin/main` with the requested trailer. The commit contains only `supabase/` and `prompts/`; the staged stat and whitespace check were reviewed before committing.
+
+Prettier ran on the Supabase README. The prior verification remains 62/62 SQL checks and 6/6 concurrency checks, with build and lint passing; no additional TODO items were verified during the commit.

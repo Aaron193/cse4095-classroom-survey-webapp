@@ -1,0 +1,1 @@
+Committed and pushed `2eaf272` to `origin/main` with the requested co-author trailer. The commit contains only `scripts/load-test.mjs` and `prompts/`; I checked the staged summary before committing.

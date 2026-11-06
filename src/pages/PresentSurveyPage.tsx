@@ -5,7 +5,7 @@ import { Button } from "../components/ui/Button";
 import { ConfirmDialog } from "../components/ui/ConfirmDialog";
 import { ErrorState, LoadingState } from "../components/ui/States";
 import { safeFilename } from "../components/results/resultsLogic";
-import { closeSurvey, getResponseCount, getSurvey } from "../lib/api";
+import { closeSurvey, getSurvey } from "../lib/api";
 import { getPublicSurveyUrl } from "../lib/publicUrl";
 import type { SurveyDetail } from "../types/survey";
 import "../components/present/present.css";
@@ -17,6 +17,8 @@ export default function PresentSurveyPage() {
   const [count, setCount] = useState(0);
   const [qr, setQr] = useState("");
   const [error, setError] = useState("");
+  const [pollFailed, setPollFailed] = useState(false);
+  const [fullscreenError, setFullscreenError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [confirming, setConfirming] = useState(false);
   const [closing, setClosing] = useState(false);
@@ -74,19 +76,28 @@ export default function PresentSurveyPage() {
     if (survey?.status !== "active") return;
     let timer: ReturnType<typeof setInterval> | undefined;
     let cancelled = false;
+    let requestVersion = 0;
+
     async function poll() {
+      const version = ++requestVersion;
       try {
-        const next = await getResponseCount(id);
-        if (!cancelled && !document.hidden) setCount(next);
-      } catch (err) {
-        if (!cancelled && !document.hidden)
-          setError(
-            (err as { message?: string }).message ||
-              "Could not update response count.",
-          );
+        const next = await getSurvey(id);
+        if (!cancelled && !document.hidden && version === requestVersion) {
+          setSurvey(next);
+          setCount(next.response_count);
+          setPollFailed(false);
+          if (next.status !== "active") setConfirming(false);
+        }
+      } catch {
+        if (!cancelled && !document.hidden && version === requestVersion) {
+          setPollFailed(true);
+        }
       }
     }
+
     function visibilityChanged() {
+      // Ignore responses started before a visibility change or a newer poll.
+      requestVersion++;
       if (timer) clearInterval(timer);
       timer = undefined;
       if (!document.hidden) {
@@ -104,17 +115,21 @@ export default function PresentSurveyPage() {
   }, [id, survey?.status]);
 
   useEffect(() => {
-    const changed = () => setFullscreen(Boolean(document.fullscreenElement));
+    const changed = () => {
+      setFullscreen(Boolean(document.fullscreenElement));
+      setFullscreenError(false);
+    };
     document.addEventListener("fullscreenchange", changed);
     return () => document.removeEventListener("fullscreenchange", changed);
   }, []);
 
   async function toggleFullscreen() {
+    setFullscreenError(false);
     try {
       if (document.fullscreenElement) await document.exitFullscreen();
       else await document.documentElement.requestFullscreen();
     } catch {
-      setError("Fullscreen is unavailable in this browser.");
+      setFullscreenError(true);
     }
   }
 
@@ -167,6 +182,11 @@ export default function PresentSurveyPage() {
                   <p className="present-count" aria-live="polite">
                     {count} {count === 1 ? "response" : "responses"}
                   </p>
+                  {pollFailed && (
+                    <p className="present-note" role="status">
+                      Couldn’t update the count, retrying.
+                    </p>
+                  )}
                 </div>
               ) : (
                 <ErrorState error="This active survey has no public link." />
@@ -197,6 +217,17 @@ export default function PresentSurveyPage() {
                   {fullscreen ? "Exit Fullscreen" : "Fullscreen"}
                 </Button>
               </div>
+              {fullscreenError && (
+                <p className="present-note" role="status">
+                  Fullscreen is unavailable in this browser.{" "}
+                  <button
+                    type="button"
+                    onClick={() => setFullscreenError(false)}
+                  >
+                    Dismiss
+                  </button>
+                </p>
+              )}
             </>
           )}
         </>

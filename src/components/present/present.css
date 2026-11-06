@@ -57,3 +57,15 @@
     width: min(75vw, 45vh);
   }
 }
+.present-note {
+  color: #475569;
+  font-size: 1rem;
+  margin: 0.35rem 0;
+}
+.present-note button {
+  color: #2457a7;
+  background: transparent;
+  border: 0;
+  text-decoration: underline;
+  cursor: pointer;
+}

@@ -10,8 +10,6 @@ Those decisions became `docs/DECISIONS.md`, which specifies every RPC, shared ty
 
 Codex CLI with `gpt-6.1-terra` at medium reasoning wrote the repository's code and files: the React frontend, SQL migration with tables, RLS and functions, SQL and concurrency tests and Docker harness, two Node scripts, Vitest tests, both READMEs, and the first draft of this summary. Codex also made the commits. Separate chats worked in parallel with assigned file ownership.
 
-Claude Code wrote every prompt on my behalf, reviewed each turn, tested in the browser, took the screenshots, and kept the prompt log. I created the Supabase project, instructor and grader accounts, and Cloudflare Pages project; connected Pages to GitHub; set the Auth Site URL; and submitted a response from my phone.
-
 ## How I configured the database
 
 The schema is in one migration, `supabase/migrations/20261105000000_initial_schema.sql`. It was applied to the Supabase project with `psql` from the `postgres:17` Docker image over the session pooler connection. The five tables—surveys, questions, choices, responses, and answers—use keys and constraints for their relationships, statuses, nonblank text, and unique positions. A partial unique index permits only one active survey; another constraint allows one response per browser token per survey. Deletes cascade to related records.

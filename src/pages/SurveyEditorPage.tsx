@@ -52,9 +52,11 @@ export default function SurveyEditorPage() {
       return;
     }
     let cancelled = false;
+
     getSurvey(routeId)
       .then((data) => {
         if (cancelled) return;
+
         const next = fromSurvey(data);
         setSurvey(data);
         setState(next);
@@ -68,6 +70,7 @@ export default function SurveyEditorPage() {
           setLoading(false);
         }
       });
+
     return () => {
       cancelled = true;
     };
@@ -75,10 +78,12 @@ export default function SurveyEditorPage() {
 
   useEffect(() => {
     if (!dirty) return;
+
     const warn = (event: BeforeUnloadEvent) => {
       event.preventDefault();
       event.returnValue = "";
     };
+
     window.addEventListener("beforeunload", warn);
     return () => window.removeEventListener("beforeunload", warn);
   }, [dirty]);
@@ -88,18 +93,21 @@ export default function SurveyEditorPage() {
     setSaved(false);
   }
 
-  function moveAndFocus(action: Action, inputId: string) {
+  function changeAndFocus(action: Action, inputId: string) {
     change(action);
+    // Wait for React to render newly added or reordered inputs.
     requestAnimationFrame(() => document.getElementById(inputId)?.focus());
   }
 
   async function persist(): Promise<string> {
     const result = await saveDraft(routeId ?? null, toDraft(state));
+
     // The save replaces question IDs, so use only the server's fresh copy.
     if (!routeId) {
       skipLoad.current = result.survey_id;
       navigate(`/surveys/${result.survey_id}/edit`, { replace: true });
     }
+
     const fresh = await getSurvey(result.survey_id);
     const next = fromSurvey(fresh);
     setSurvey(fresh);
@@ -112,7 +120,35 @@ export default function SurveyEditorPage() {
   async function submit(activate: boolean, confirmed = false) {
     setShowValidation(true);
     setError(null);
-    if (hasErrors(validate(state))) return;
+    const validation = validate(state);
+    if (hasErrors(validation)) {
+      let target = validation.title ? "survey-title" : "add-question";
+
+      if (!validation.title && !validation.questions) {
+        for (const question of state.questions) {
+          const questionErrors = validation.items[question.id];
+          if (questionErrors.text) {
+            target = `question-${question.id}`;
+            break;
+          }
+
+          const invalidChoice = question.choices.find(
+            (choice) => questionErrors.choiceErrors[choice.id],
+          );
+          if (invalidChoice || questionErrors.choices) {
+            // A missing choice has no input to focus, so focus its add button.
+            target = invalidChoice
+              ? `choice-${invalidChoice.id}`
+              : `add-choice-${question.id}`;
+            break;
+          }
+        }
+      }
+
+      requestAnimationFrame(() => document.getElementById(target)?.focus());
+      return;
+    }
+
     setBusy(true);
     try {
       if (activate && !confirmed) {
@@ -124,6 +160,7 @@ export default function SurveyEditorPage() {
           return;
         }
       }
+
       const savedId = await persist();
       if (activate) {
         await activateSurvey(savedId);
@@ -317,7 +354,7 @@ export default function SurveyEditorPage() {
                               variant="secondary"
                               disabled={choiceIndex === 0 || busy}
                               onClick={() =>
-                                moveAndFocus(
+                                changeAndFocus(
                                   {
                                     type: "moveChoice",
                                     id: question.id,
@@ -337,7 +374,7 @@ export default function SurveyEditorPage() {
                                 busy
                               }
                               onClick={() =>
-                                moveAndFocus(
+                                changeAndFocus(
                                   {
                                     type: "moveChoice",
                                     id: question.id,
@@ -370,13 +407,14 @@ export default function SurveyEditorPage() {
                     <Button
                       variant="secondary"
                       disabled={busy}
-                      onClick={() =>
-                        change({
-                          type: "addChoice",
-                          id: question.id,
-                          choice: { id: id(), text: "" },
-                        })
-                      }
+                      id={`add-choice-${question.id}`}
+                      onClick={() => {
+                        const choice = { id: id(), text: "" };
+                        changeAndFocus(
+                          { type: "addChoice", id: question.id, choice },
+                          `choice-${choice.id}`,
+                        );
+                      }}
                     >
                       + Add choice
                     </Button>
@@ -387,7 +425,7 @@ export default function SurveyEditorPage() {
                     variant="secondary"
                     disabled={index === 0 || busy}
                     onClick={() =>
-                      moveAndFocus(
+                      changeAndFocus(
                         {
                           type: "moveQuestion",
                           id: question.id,
@@ -403,7 +441,7 @@ export default function SurveyEditorPage() {
                     variant="secondary"
                     disabled={index === state.questions.length - 1 || busy}
                     onClick={() =>
-                      moveAndFocus(
+                      changeAndFocus(
                         { type: "moveQuestion", id: question.id, direction: 1 },
                         textId,
                       )
@@ -430,9 +468,14 @@ export default function SurveyEditorPage() {
             <Button
               variant="secondary"
               disabled={busy}
-              onClick={() =>
-                change({ type: "addQuestion", question: makeQuestion() })
-              }
+              id="add-question"
+              onClick={() => {
+                const question = makeQuestion();
+                changeAndFocus(
+                  { type: "addQuestion", question },
+                  `question-${question.id}`,
+                );
+              }}
             >
               + Add question
             </Button>

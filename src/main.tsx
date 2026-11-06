@@ -3,9 +3,13 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./auth/AuthProvider";
 import { ProtectedRoute } from "./auth/ProtectedRoute";
+import { AppErrorBoundary } from "./components/ui/AppErrorBoundary";
+import { handlePreloadError } from "./lib/preloadRecovery";
 import { LoadingState } from "./components/ui/States";
 import { isSupabaseConfigured } from "./lib/supabase";
 import "./style.css";
+
+window.addEventListener("vite:preloadError", handlePreloadError);
 
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
@@ -97,6 +101,8 @@ function App() {
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App />
+    <AppErrorBoundary>
+      <App />
+    </AppErrorBoundary>
   </React.StrictMode>,
 );

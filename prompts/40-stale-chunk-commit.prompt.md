@@ -1,0 +1,3 @@
+nice, and good call on cache-control. I checked: pages serves the html with "public, max-age=0, must-revalidate", so a reload always revalidates and gets the new build. commit and push it: only src/main.tsx, src/components/ui/AppErrorBoundary.tsx, src/lib/preloadRecovery.ts, src/lib/preloadRecovery.test.ts and prompts/ (my log). the results chat is still working on its files, so stage only those paths and check git diff --cached --stat first. message something like "Recover from stale chunks after a deploy" with a short body, ending with this trailer line:
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

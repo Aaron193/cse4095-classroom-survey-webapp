@@ -1,0 +1,69 @@
+.student-page {
+  width: min(100% - 2rem, 42rem);
+  margin: 0 auto;
+  padding: 2rem 0 4rem;
+  font-size: 1.125rem;
+  overflow-wrap: anywhere;
+}
+.student-page h1 {
+  font-size: clamp(1.8rem, 6vw, 2.5rem);
+}
+.student-description {
+  white-space: pre-wrap;
+}
+.student-form {
+  gap: 1.75rem;
+  margin-top: 2rem;
+}
+.student-question {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.student-question legend {
+  font-weight: 700;
+  font-size: 1.2rem;
+  padding: 0;
+  margin-bottom: 0.75rem;
+}
+.student-choices {
+  display: grid;
+  gap: 0.65rem;
+}
+.student-choice {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 52px;
+  padding: 0.75rem 1rem;
+  border: 1px solid #9ca3af;
+  border-radius: 0.5rem;
+  background: white;
+  cursor: pointer;
+  font-weight: 400;
+}
+.student-choice:has(input:checked) {
+  border-color: #1e3a5f;
+  background: #eff6ff;
+}
+.student-choice:has(input:focus-visible) {
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+}
+.student-choice input {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  min-height: 0;
+  margin: 0;
+  accent-color: #1e3a5f;
+}
+.student-required {
+  color: #991b1b;
+  margin: 0 0 0.75rem;
+  font-weight: 600;
+}
+.student-submit {
+  width: 100%;
+}

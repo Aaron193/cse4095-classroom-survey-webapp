@@ -1,0 +1,8 @@
+last docs pass before I submit. I finished testing everything on the live site, so:
+
+1. TODO.md: the assignment wants it updated in the repo. check every box except these: all of Phase 16 (post-MVP, none of it is built), and the last two items in Phase 17 (giving the grader access privately and submitting the URLs, which happen when I submit on HuskyCT). don't reword, add, remove or reorder anything else in the file.
+2. README testing section, add a short paragraph for the second pass: the student page at phone width (a 390 px frame) and keyboard-only, a WCAG contrast check of every text element on the landing, login, dashboard, editor, presentation, results and student pages (nothing below 4.5:1, or 3:1 for large text), results refresh, the date filter, archiving and viewing archived results, and log out. also that a CSV made by the app's exporter with commas, quotes, line breaks, non-ASCII text and formula-like values opened correctly in LibreOffice Calc 24.2 with no formulas evaluated.
+3. README grader access: say there's a separate grader account with the instructor role, and its credentials are in the HuskyCT submission. no email in the repo.
+4. development summary: add the two findings from the last pass to the findings section. a test script's sign-out ended my browser session, because supabase-js signs out every session of that user by default; the supabase auth logs showed it, and the scripts now sign out only their own session. and a screen reader user heard nothing after submitting, so focus now moves to the confirmation heading. keep the whole summary at or under about 1000 words, trim elsewhere if you need to.
+
+only touch TODO.md, README.md and docs/DEVELOPMENT_SUMMARY.md, run prettier on them. no commits.

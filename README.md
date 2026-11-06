@@ -72,6 +72,8 @@ In November 2026, the Vitest suite passed 26 of 26 tests. The SQL checks passed 
 
 A manual pass on the deployed site in desktop Chrome covered instructor creation, validation, saving, reordering, activation and its existing-active-survey warning, presentation with the live count, closing, duplication, archiving, status filtering, and deletion with the response-count warning. It also covered student validation, submission, already-submitted, closed, and not-found states. A real phone submission was made by scanning the QR code.
 
+A second pass checked the student page in a 390 px phone-width frame and with keyboard-only navigation. A WCAG contrast check of every text element on the landing, login, dashboard, editor, presentation, results, and student pages found none below 4.5:1 (or 3:1 for large text). The pass also checked results refresh, the date filter, archiving and viewing archived results, and logout. A CSV made by the app's exporter containing commas, quotes, line breaks, non-ASCII text, and formula-like values opened correctly in LibreOffice Calc 24.2, with no formulas evaluated.
+
 A live-project load test sent 200 simulated students from one machine to load the survey and submit simultaneously, with zero failures. Time from loading the survey to confirmed submission was 349 ms minimum, 2.3 s median, 4.0 s at the 95th percentile, and 4.3 s maximum. These measurements describe that run, not a general capacity guarantee.
 
 ## Deploy to Cloudflare Pages
@@ -102,7 +104,7 @@ The Supabase Table Editor screenshots show a test survey with two questions, six
 
 ## Grader access
 
-Instructor test credentials are provided privately in the HuskyCT submission and are never stored in this repository.
+A separate grader account has the instructor role. Its credentials are provided privately in the HuskyCT submission; no grader email or credentials are stored in this repository.
 
 ## Project structure
 

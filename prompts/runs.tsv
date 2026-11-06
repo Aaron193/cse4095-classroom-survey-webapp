@@ -20,3 +20,4 @@
 20-present-results-commit	2026-11-06T00:52:19Z	2026-11-06T00:52:41Z	exit=0	resume	thread=01a1ae51-6c70-7ea3-9524-13bec44c6c1b	sandbox=git
 21-verify-rls-real-probes	2026-11-06T01:09:16Z	2026-11-06T01:10:40Z	exit=0	resume	thread=01a1ae56-857c-76d3-aae4-b991c40a506e	sandbox=workspace-write
 22-verify-rls-no-fixture	2026-11-06T01:11:10Z	2026-11-06T01:11:40Z	exit=0	resume	thread=01a1ae56-857c-76d3-aae4-b991c40a506e	sandbox=workspace-write
+23-code-splitting-commit	2026-11-06T01:12:10Z	2026-11-06T01:12:45Z	exit=0	resume	thread=01a1ae47-2d1a-7030-8ad0-6ca6f613533f	sandbox=git

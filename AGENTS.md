@@ -7,3 +7,5 @@
 - Do not commit unless the user asks. If asked, stage only your own files and inspect what is staged.
 - Do not edit `TODO.md` unless the user asks. List the checklist items you actually verified in your final message so the user can review them.
 - Run the build and lint before saying your implementation work is done. Report any failure or unavailable command honestly.
+
+- Keep code readable: use blank lines between functions and logical blocks, add short comments for non-obvious behavior, avoid giant one-liners, and run Prettier before finishing.

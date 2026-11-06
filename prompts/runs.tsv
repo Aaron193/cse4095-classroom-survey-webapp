@@ -1,2 +1,6 @@
 01-spec-review	2026-11-06T00:25:11Z	2026-11-06T00:26:09Z	exit=0	new	thread=01a1ae3e-c7e8-73b1-a04a-04b81e061403	sandbox=workspace-write
 02-decisions-and-contract	2026-11-06T00:28:16Z	2026-11-06T00:30:09Z	exit=0	resume	thread=01a1ae3e-c7e8-73b1-a04a-04b81e061403	sandbox=workspace-write
+03-plan-fixes-and-commit	2026-11-06T00:32:55Z	2026-11-06T00:33:23Z	exit=0	resume	thread=01a1ae3e-c7e8-73b1-a04a-04b81e061403	sandbox=git
+04-scaffold	2026-11-06T00:34:22Z	2026-11-06T00:37:59Z	exit=0	new	thread=01a1ae47-2d1a-7030-8ad0-6ca6f613533f	sandbox=workspace-write
+05-database	2026-11-06T00:34:22Z	2026-11-06T00:39:09Z	exit=0	new	thread=01a1ae47-2d81-78b3-8a75-7b3dd51edbe0	sandbox=workspace-write
+06-scaffold-review-fixes	2026-11-06T00:42:08Z	2026-11-06T00:43:31Z	exit=0	resume	thread=01a1ae47-2d1a-7030-8ad0-6ca6f613533f	sandbox=workspace-write

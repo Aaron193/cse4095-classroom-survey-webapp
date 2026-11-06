@@ -1,0 +1,17 @@
+you're chat A from docs/DECISIONS.md: the project scaffold plus all the shared frontend pieces. chat B is building everything under supabase/ at the same time in this same working tree, so don't touch supabase/. read AGENTS.md and docs/DECISIONS.md first, the contract in there is what you build against. don't change the contract on your own, if something in it doesn't work tell me.
+
+what I need:
+
+- vite + react + typescript at the repo root (not in a subfolder) with tailwind (v4 through the vite plugin is fine), react router, @supabase/supabase-js, recharts, qrcode (+ its types), eslint, prettier and vitest. npm scripts for dev, build, lint, format, test and preview. folder layout like the spec (src/components, src/pages, src/lib) plus src/types and src/auth from the contract.
+- .env.example with the three env var names from the contract and placeholder values.
+- src/lib/supabase.ts with the single client. if the env vars are missing, the app should show a clear "not configured" message instead of a blank white page.
+- src/types/survey.ts and src/lib/api.ts exactly like the contract, every function. map errors to AppError with the contract's codes (exception message -> code, fetch/network failures -> NETWORK_ERROR, anything else -> UNEXPECTED_ERROR) with a friendly message for each, so pages never show raw supabase errors. make sure the response counts from listSurveys/getSurvey come back as plain numbers.
+- src/auth: AuthProvider (getSession + onAuthStateChange), useAuth and ProtectedRoute. a real login page: email + password with signInWithPassword, inline error, button disabled with "Signing in..." while it's working, then redirect to /dashboard, or back to where they were if they got bounced from a protected page. logout goes in the instructor header. if someone signs in but the backend says FORBIDDEN, the pages need to be able to show "this account isn't an instructor", so give the shared error state a good message for that.
+- the router with every route in the contract. landing page per UI.md. placeholder pages with default exports for DashboardPage, SurveyEditorPage (used for both /surveys/new and /surveys/:id/edit), PresentSurveyPage, ResultsPage and StudentSurveyPage, just a heading is enough. a simple 404 page for unknown routes.
+- shared components for the 4 page chats, in src/components/ui or similar: instructor page layout/header (app name, signed-in email, logout), buttons, a status badge (text label + color, not color alone), a confirm dialog (accessible, focus handling, esc cancels) and loading / error / empty states. style it like UI.md says: clean, minimal, neutral, big readable type, visible focus rings, 44px touch targets on mobile, no decorative animations or gradients.
+- a small helper that builds the public survey URL (VITE_PUBLIC_SITE_URL or window.location.origin, trailing slashes normalized), since the present page and the dashboard both need it.
+- vitest tests for the error mapping and the URL helper.
+
+I don't have the supabase project yet, so you can't test against a real database. use placeholder env values to make sure it builds. run build, lint and the tests. you don't need to check it in a browser, I'll click through it myself afterwards. don't leave a dev server running when you're done.
+
+don't edit TODO.md. at the end tell me what you built, what you verified and how, and which TODO boxes you think are now verified. no commits.

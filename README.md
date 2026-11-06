@@ -35,7 +35,7 @@ See [supabase/README.md](supabase/README.md) for database setup, instructor prov
 
 ## Local setup
 
-Prerequisites: Node.js and npm compatible with the installed Vite version, and a configured Supabase project. Docker is needed only for the local database checks.
+Prerequisites: Node.js `^20.19.0` or `>=22.12.0`, npm, and a configured Supabase project. Docker is needed only for the local database checks.
 
 1. Install dependencies: `npm install`.
 2. Copy `.env.example` to `.env.local` and set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` to your project's URL and public anon key. Optionally set `VITE_PUBLIC_SITE_URL` to the absolute HTTP(S) URL students should use. Do not put a service-role key or instructor credentials in these files.
@@ -53,17 +53,37 @@ To test on a phone on the same network, set `VITE_PUBLIC_SITE_URL` in `.env.loca
 | `npm run format`              | Run Prettier on the configured source and configuration files.          |
 | `npm test`                    | Run the Vitest suite once.                                              |
 | `npm run preview`             | Preview the production build locally.                                   |
+| `npm run verify:rls`          | Check access controls against the configured Supabase project.          |
+| `npm run load-test`           | Run simulated student loads and submissions against Supabase.           |
 | `supabase/tests/run_local.sh` | Run isolated PostgreSQL checks in Docker, including concurrency checks. |
+
+The two Supabase scripts use `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` from `.env.local` or the environment. Provide `INSTRUCTOR_EMAIL` and `INSTRUCTOR_PASSWORD` as environment variables for the instructor checks and load test. For example, place those two values in a private `.env.scripts.local` file, which is gitignored, and run:
+
+```sh
+node --env-file=.env.scripts.local scripts/verify-rls.mjs
+node --env-file=.env.scripts.local scripts/load-test.mjs --yes
+```
+
+Without instructor credentials, `verify:rls` skips its instructor checks. The load test activates its own survey, closing any currently active survey, and requires `--yes` to acknowledge this. It deletes its survey afterwards unless `--keep` is passed. The equivalent npm command is `npm run load-test -- --yes` when the credentials are already in the environment; add `--keep` after `--yes` to retain the test survey.
+
+## Testing
+
+In November 2026, the Vitest suite passed 23 of 23 tests. The SQL checks passed 62 of 62 both in the local Docker harness and on the live Supabase project; the local Docker harness also passed 6 of 6 concurrency checks. On the live project, `verify:rls` passed 31 of 31 checks.
+
+A live-project load test sent 200 simulated students from one machine to load the survey and submit simultaneously, with zero failures. Time from loading the survey to confirmed submission was 349 ms minimum, 2.3 s median, 4.0 s at the 95th percentile, and 4.3 s maximum. These measurements describe that run, not a general capacity guarantee.
 
 ## Deploy to Cloudflare Pages
 
 Connect the GitHub repository to Cloudflare Pages and configure:
 
+- Framework preset: None
 - Build command: `npm run build`
 - Build output directory: `dist`
-- Environment variables: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, and `VITE_PUBLIC_SITE_URL` set to the production app's absolute URL, for example `https://<production-domain>`.
+- Environment variables: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, and `NODE_VERSION=22`.
 
-Set the Supabase Auth **Site URL** to the production domain as well. `public/_redirects` provides the SPA fallback so routes such as `/s/:slug` load on direct visits. After deploying, verify login, QR links, submissions, results, and a direct visit to a student link on the production domain.
+`VITE_PUBLIC_SITE_URL` is optional and can be left unset in production. The QR code and link then use the address from which the instructor opened the page, normally the production URL on Cloudflare Pages. Set it to an absolute HTTP(S) URL when students need a different address, such as the LAN address used for phone testing.
+
+Set the Supabase Auth **Site URL** to the production domain as well. Cloudflare Pages serves `index.html` for unknown paths when the build has no top-level `404.html`, allowing direct visits to routes such as `/s/:slug`. Do not add a top-level `404.html`, which disables this SPA fallback. After deploying, verify login, QR links, submissions, results, and a direct visit to a student link on the production domain.
 
 Production URL: **<production URL>**
 
@@ -78,7 +98,6 @@ Instructor test credentials are provided privately in the HuskyCT submission and
 ├── docs/                  # Shared implementation decisions
 ├── instructions/          # Provided assignment and specifications
 ├── prompts/               # AI development history
-├── public/                # Static assets and SPA redirect
 ├── src/
 │   ├── auth/              # Authentication and route protection
 │   ├── components/        # Shared and feature-specific UI and logic

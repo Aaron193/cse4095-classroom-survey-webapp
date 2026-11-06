@@ -1,0 +1,3 @@
+Created [README.md](/home/dev/Desktop/college/senior/sem1/cse4095/classroom-survey-web-app/README.md) with the project overview, architecture, database and security model, setup, scripts, deployment steps, grader access, and project structure. The production URL remains a placeholder.
+
+Checklist items verified: the documented scripts exist, the Cloudflare SPA redirect is present, and the build and lint pass. Prettier was run on the README. No commit was made.

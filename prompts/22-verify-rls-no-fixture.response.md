@@ -1,0 +1,3 @@
+Updated [verify-rls.mjs](/home/dev/Desktop/college/senior/sem1/cse4095/classroom-survey-web-app/scripts/verify-rls.mjs) to remove the fixture requirement. Updates and deletes now use random IDs; inserts use valid-looking rows. The script retains strict `42501` checks and reports details of unexpectedly successful requests.
+
+Verified script parsing, Prettier, and lint. The checks have not been run against a Supabase project.

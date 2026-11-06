@@ -16,3 +16,7 @@
 14-code-splitting	2026-11-06T00:51:07Z	2026-11-06T00:51:59Z	exit=0	resume	thread=01a1ae47-2d1a-7030-8ad0-6ca6f613533f	sandbox=workspace-write
 15-readme	2026-11-06T00:51:07Z	2026-11-06T00:52:08Z	exit=0	new	thread=01a1ae56-8516-7b91-8c77-2571574c294a	sandbox=workspace-write
 19-student-commit	2026-11-06T00:51:57Z	2026-11-06T00:52:19Z	exit=0	resume	thread=01a1ae51-6c70-7f73-93d3-3989e914bf46	sandbox=git
+16-test-scripts	2026-11-06T00:51:07Z	2026-11-06T00:52:35Z	exit=0	new	thread=01a1ae56-857c-76d3-aae4-b991c40a506e	sandbox=workspace-write
+20-present-results-commit	2026-11-06T00:52:19Z	2026-11-06T00:52:41Z	exit=0	resume	thread=01a1ae51-6c70-7ea3-9524-13bec44c6c1b	sandbox=git
+21-verify-rls-real-probes	2026-11-06T01:09:16Z	2026-11-06T01:10:40Z	exit=0	resume	thread=01a1ae56-857c-76d3-aae4-b991c40a506e	sandbox=workspace-write
+22-verify-rls-no-fixture	2026-11-06T01:11:10Z	2026-11-06T01:11:40Z	exit=0	resume	thread=01a1ae56-857c-76d3-aae4-b991c40a506e	sandbox=workspace-write

@@ -1,0 +1,5 @@
+Updated [verify-rls.mjs](/home/dev/Desktop/college/senior/sem1/cse4095/classroom-survey-web-app/scripts/verify-rls.mjs) to require a PostgreSQL `42501` permission-denied error for anonymous table and instructor RPC probes. Unexpectedly successful writes are reported as failures with their operation details.
+
+Write probes now require `INSTRUCTOR_EMAIL`, `INSTRUCTOR_PASSWORD`, and `RLS_TEST_SURVEY_ID` in the environment. Use a **disposable survey** containing questions, choices, responses, and answers; one response must have an unanswered question for the answer-insert probe. If access is misconfigured, the probes can modify or delete fixture data. Missing fixture coverage is reported as a failure.
+
+Verified that the script parses and that Prettier and lint pass. The probes have not been run against a Supabase project.

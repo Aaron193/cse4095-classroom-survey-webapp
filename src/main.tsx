@@ -9,6 +9,7 @@ import { LoadingState } from "./components/ui/States";
 import { isSupabaseConfigured } from "./lib/supabase";
 import "./style.css";
 
+// Recover when a deployment removes a chunk referenced by an open tab.
 window.addEventListener("vite:preloadError", handlePreloadError);
 
 const LandingPage = lazy(() => import("./pages/LandingPage"));
@@ -18,6 +19,8 @@ const DashboardPage = lazy(() => import("./pages/DashboardPage"));
 const SurveyEditorPage = lazy(() => import("./pages/SurveyEditorPage"));
 const PresentSurveyPage = lazy(() => import("./pages/PresentSurveyPage"));
 const ResultsPage = lazy(() => import("./pages/ResultsPage"));
+
+// The shared layout is a named export, so adapt it for React.lazy.
 const InstructorLayout = lazy(() =>
   import("./components/ui/InstructorLayout").then(({ InstructorLayout }) => ({
     default: InstructorLayout,
@@ -37,6 +40,7 @@ function App() {
         </div>
       </main>
     );
+
   return (
     <BrowserRouter>
       <AuthProvider>

@@ -27,6 +27,7 @@ describe("instructor survey IDs", () => {
       () => getSurveyResults(invalid),
       () => getSurveyExport(invalid),
     ];
+
     for (const call of calls) {
       await expect(call()).rejects.toMatchObject({ code: "NOT_FOUND" });
     }

@@ -3,14 +3,18 @@ import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/useAuth";
 import { Button } from "../components/ui/Button";
 import { ErrorState, LoadingState } from "../components/ui/States";
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
+
   const { session, loading, signIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Preserve the protected route, including its query and fragment, after sign-in.
   const from = location.state?.from;
   const destination = from?.pathname
     ? `${from.pathname}${from.search ?? ""}${from.hash ?? ""}`
@@ -20,6 +24,7 @@ export default function LoginPage() {
     event.preventDefault();
     setError("");
     setPending(true);
+
     try {
       await signIn(email, password);
       navigate(destination, { replace: true });
@@ -33,6 +38,7 @@ export default function LoginPage() {
       setPending(false);
     }
   }
+
   if (loading) return <LoadingState />;
   if (session) return <Navigate to={destination} replace />;
 

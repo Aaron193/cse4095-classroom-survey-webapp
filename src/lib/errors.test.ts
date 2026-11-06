@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { mapError } from "./errors";
+
 describe("mapError", () => {
   it("maps database exception messages to safe messages", () => {
     expect(mapError({ message: "FORBIDDEN" })).toEqual({
@@ -10,6 +11,7 @@ describe("mapError", () => {
       "DUPLICATE_RESPONSE",
     );
   });
+
   it("maps network errors and hides unexpected details", () => {
     expect(mapError(new TypeError("Failed to fetch")).code).toBe(
       "NETWORK_ERROR",

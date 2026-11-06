@@ -1,0 +1,5 @@
+quick one before we deploy to cloudflare pages. I've read that pages already serves index.html for unknown paths when the site has no 404.html, and that a `/* /index.html 200` line in _redirects can show up in the pages build log as an "infinite loop detected" rule that gets ignored. can you check what actually happens with our public/_redirects?
+
+build it and serve dist with wrangler pages dev (npx is fine, don't add wrangler to package.json, and turn off its telemetry). then directly load /s/abc23456, /dashboard, /surveys/<any uuid>/present, a made-up path, and one of the built asset files, and tell me what wrangler prints about the redirects file and what status and content each request gets back. if the file does nothing useful or causes a warning, delete it and check the same urls again without it.
+
+don't touch README.md (it's the docs chat's file), just tell me if the deploy section needs to change. clean up anything wrangler leaves behind in the repo (like .wrangler/). don't edit TODO.md, no commits.

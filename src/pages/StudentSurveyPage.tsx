@@ -49,6 +49,14 @@ export default function StudentSurveyPage() {
   const submittingRef = useRef(false);
   const questionRefs = useRef<Record<string, HTMLFieldSetElement | null>>({});
   const requestRef = useRef(0);
+  const focusEndState = useRef(false);
+
+  const endStateHeading = useCallback((heading: HTMLHeadingElement | null) => {
+    if (heading && focusEndState.current) {
+      heading.focus();
+      focusEndState.current = false;
+    }
+  }, []);
 
   const load = useCallback(async () => {
     const request = ++requestRef.current;
@@ -107,14 +115,17 @@ export default function StudentSurveyPage() {
       const token = getBrowserToken(storage, memory, createRandomToken);
       await submitSurveyResponse(page.survey.id, token, answers);
       rememberSubmission(storage, memory, page.survey.id);
+      focusEndState.current = true;
       setPage({ kind: "success" });
     } catch (error) {
       const code = errorCode(error);
 
       if (code === "DUPLICATE_RESPONSE") {
         rememberSubmission(browserStorage(), memory, page.survey.id);
+        focusEndState.current = true;
         setPage({ kind: "submitted" });
       } else if (code === "SURVEY_NOT_ACTIVE") {
+        focusEndState.current = true;
         setPage({ kind: "closed", title: page.survey.title });
       } else {
         setSubmitError(
@@ -146,19 +157,25 @@ export default function StudentSurveyPage() {
       )}
       {page.kind === "closed" && (
         <>
-          <h1>{page.title}</h1>
+          <h1 ref={endStateHeading} tabIndex={-1}>
+            {page.title}
+          </h1>
           <p>This survey is no longer accepting responses.</p>
         </>
       )}
       {page.kind === "success" && (
         <>
-          <h1>Thank you!</h1>
+          <h1 ref={endStateHeading} tabIndex={-1}>
+            Thank you!
+          </h1>
           <p>Your response has been recorded.</p>
         </>
       )}
       {page.kind === "submitted" && (
         <>
-          <h1>Already submitted</h1>
+          <h1 ref={endStateHeading} tabIndex={-1}>
+            Already submitted
+          </h1>
           <p>You have already submitted a response to this survey.</p>
         </>
       )}

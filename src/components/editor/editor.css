@@ -1,0 +1,51 @@
+.editor {
+  max-width: 48rem;
+}
+.editor form {
+  gap: 0.75rem;
+}
+.editor textarea,
+.editor select {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid #9ca3af;
+  border-radius: 0.35rem;
+  padding: 0.65rem;
+  font: inherit;
+  background: white;
+}
+.editor-card {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  min-width: 0;
+}
+.editor-card h3,
+.editor-card h4,
+.editor-card p {
+  margin: 0;
+}
+.editor-choice {
+  display: grid;
+  gap: 0.5rem;
+}
+.editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.editor-error {
+  color: #991b1b;
+  margin: 0;
+}
+.editor-fields {
+  display: grid;
+  gap: 0.75rem;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}

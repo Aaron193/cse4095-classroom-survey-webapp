@@ -4,7 +4,7 @@ A classroom polling app where an instructor creates and presents surveys and stu
 
 The frontend uses React, TypeScript, Vite, React Router and Tailwind CSS, with Recharts for charts and `qrcode` for QR codes. Supabase provides authentication, PostgreSQL, row-level security (RLS), and database functions.
 
-Live application: **<production URL>**
+Live application: [https://cse4095-classroom-survey-webapp.pages.dev](https://cse4095-classroom-survey-webapp.pages.dev)
 
 ## Architecture and data flow
 
@@ -68,7 +68,9 @@ Without instructor credentials, `verify:rls` skips its instructor checks. The lo
 
 ## Testing
 
-In November 2026, the Vitest suite passed 23 of 23 tests. The SQL checks passed 62 of 62 both in the local Docker harness and on the live Supabase project; the local Docker harness also passed 6 of 6 concurrency checks. On the live project, `verify:rls` passed 31 of 31 checks.
+In November 2026, the Vitest suite passed 26 of 26 tests. The SQL checks passed 62 of 62 both in the local Docker harness and on the live Supabase project; the local Docker harness also passed 6 of 6 concurrency checks. On the live project, `verify:rls` passed 31 of 31 checks.
+
+A manual pass on the deployed site in desktop Chrome covered instructor creation, validation, saving, reordering, activation and its existing-active-survey warning, presentation with the live count, closing, duplication, archiving, status filtering, and deletion with the response-count warning. It also covered student validation, submission, already-submitted, closed, and not-found states. A real phone submission was made by scanning the QR code.
 
 A live-project load test sent 200 simulated students from one machine to load the survey and submit simultaneously, with zero failures. Time from loading the survey to confirmed submission was 349 ms minimum, 2.3 s median, 4.0 s at the 95th percentile, and 4.3 s maximum. These measurements describe that run, not a general capacity guarantee.
 
@@ -85,7 +87,18 @@ Connect the GitHub repository to Cloudflare Pages and configure:
 
 Set the Supabase Auth **Site URL** to the production domain as well. Cloudflare Pages serves `index.html` for unknown paths when the build has no top-level `404.html`, allowing direct visits to routes such as `/s/:slug`. Do not add a top-level `404.html`, which disables this SPA fallback. After deploying, verify login, QR links, submissions, results, and a direct visit to a student link on the production domain.
 
-Production URL: **<production URL>**
+Production URL: [https://cse4095-classroom-survey-webapp.pages.dev](https://cse4095-classroom-survey-webapp.pages.dev)
+
+## Screenshots
+
+The Supabase Table Editor screenshots show a test survey with two questions, six choices, four responses, and eight answers. Anonymous tokens are blurred and no email is shown.
+
+- [Tables and survey](docs/screenshots/01-database-tables-and-surveys.jpg)
+- [Questions](docs/screenshots/02-database-questions.jpg)
+- [Choices](docs/screenshots/03-database-choices.jpg)
+- [Responses](docs/screenshots/04-database-responses.jpg)
+- [Answers](docs/screenshots/05-database-answers.jpg)
+- [Results in the app](docs/screenshots/06-results-in-app.jpg)
 
 ## Grader access
 
@@ -95,7 +108,7 @@ Instructor test credentials are provided privately in the HuskyCT submission and
 
 ```text
 .
-├── docs/                  # Shared implementation decisions
+├── docs/                  # Decisions, development summary and screenshots
 ├── instructions/          # Provided assignment and specifications
 ├── prompts/               # AI development history
 ├── src/
@@ -114,4 +127,4 @@ Instructor test credentials are provided privately in the HuskyCT submission and
 └── TODO.md                # Project checklist
 ```
 
-See [docs/DECISIONS.md](docs/DECISIONS.md) for the implementation contract, [TODO.md](TODO.md) for the checklist, [instructions/](instructions/) for the provided specs, and [prompts/](prompts/) for the AI development history.
+See the [development summary](docs/DEVELOPMENT_SUMMARY.md) for the project process and review, [docs/DECISIONS.md](docs/DECISIONS.md) for the implementation contract, [TODO.md](TODO.md) for the checklist, [instructions/](instructions/) for the provided specs, and [prompts/](prompts/) for the AI development history.

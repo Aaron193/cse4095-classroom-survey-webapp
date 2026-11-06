@@ -30,6 +30,7 @@ const labels: Record<SurveyAction, string> = {
   archive: "Archive",
   delete: "Delete",
 };
+
 type ConfirmAction = "activate" | "close" | "archive" | "delete";
 
 function errorMessage(error: unknown): string {
@@ -38,8 +39,10 @@ function errorMessage(error: unknown): string {
     error !== null &&
     "message" in error &&
     "code" in error
-  )
+  ) {
     return (error as AppError).message;
+  }
+
   return "Something went wrong. Please try again.";
 }
 
@@ -64,6 +67,7 @@ export default function DashboardPage() {
   }, []);
 
   useEffect(() => {
+    // Ignore the initial request if the page is no longer mounted.
     let mounted = true;
     listSurveys()
       .then((data) => {
@@ -75,6 +79,7 @@ export default function DashboardPage() {
       .finally(() => {
         if (mounted) setLoading(false);
       });
+
     return () => {
       mounted = false;
     };
@@ -86,17 +91,24 @@ export default function DashboardPage() {
   ) {
     setBusy(true);
     setError("");
+
     try {
       let destination = "";
+
       if (action === "duplicate") {
         const copy = await duplicateSurvey(survey.id);
         destination = `/surveys/${copy.survey_id}/edit`;
       } else if (action === "activate") {
         await activateSurvey(survey.id);
         destination = `/surveys/${survey.id}/present`;
-      } else if (action === "close") await closeSurvey(survey.id);
-      else if (action === "archive") await archiveSurvey(survey.id);
-      else await deleteSurvey(survey.id);
+      } else if (action === "close") {
+        await closeSurvey(survey.id);
+      } else if (action === "archive") {
+        await archiveSurvey(survey.id);
+      } else {
+        await deleteSurvey(survey.id);
+      }
+
       setConfirmation(null);
       await reload();
       if (destination) navigate(destination);
@@ -110,6 +122,7 @@ export default function DashboardPage() {
 
   const visible = filterAndSortSurveys(surveys, { search, status, from, to });
   const active = surveys.find((survey) => survey.status === "active");
+
   return (
     <div className="dashboard">
       <div className="dashboard-heading">
@@ -243,7 +256,9 @@ export default function DashboardPage() {
         }
         confirmLabel={confirmation ? labels[confirmation.action] : "Confirm"}
         confirmVariant={
-          confirmation?.action === "delete" ? "danger" : "primary"
+          confirmation?.action === "delete" || confirmation?.action === "close"
+            ? "danger"
+            : "primary"
         }
         busy={busy}
         onCancel={() => setConfirmation(null)}

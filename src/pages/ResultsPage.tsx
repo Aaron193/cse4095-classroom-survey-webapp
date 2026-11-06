@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Bar, BarChart, ResponsiveContainer, XAxis } from "recharts";
+import { ResponsiveContainer } from "recharts";
+import { ResultsBarChart } from "../components/results/ResultsBarChart";
 import { Button } from "../components/ui/Button";
 import { ErrorState, LoadingState } from "../components/ui/States";
 import { StatusBadge } from "../components/ui/StatusBadge";
@@ -156,18 +157,7 @@ export default function ResultsPage() {
                   </div>
                   <div aria-hidden="true" className="results-bar">
                     <ResponsiveContainer width="100%" height={20}>
-                      <BarChart
-                        layout="vertical"
-                        data={[choice]}
-                        margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
-                      >
-                        <XAxis type="number" domain={[0, 100]} hide />
-                        <Bar
-                          dataKey="percentage"
-                          fill="#2457a7"
-                          isAnimationActive={false}
-                        />
-                      </BarChart>
+                      <ResultsBarChart percentage={choice.percentage} />
                     </ResponsiveContainer>
                   </div>
                 </div>
